@@ -3,197 +3,254 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hestia BG Remover • Dashboard</title>
+    <title>Hestia Background Remover</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/png" href="favicon.ico" />
     <style>
-      /* Menggunakan font Inter seperti GitHub */
       body {
         font-family: "Inter", sans-serif;
+        transition: background-color 0.3s ease;
       }
 
-      /* KUNCI: CSS untuk Background Aurora Bergerak */
+      /* Aurora Background */
       .aurora-bg {
-        background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-        position: relative;
+        position: fixed; /* Tetap di belakang saat scroll */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
         overflow: hidden;
+        background: #0d1117; /* Default dark */
       }
 
-      .aurora-bg::before,
-      .aurora-bg::after {
-        content: "";
+      .light .aurora-bg {
+        background: #f0f2f5;
+      }
+
+      .aurora-blob {
         position: absolute;
-        width: 200%;
-        height: 200%;
-        top: -50%;
-        left: -50%;
-        opacity: 0.2;
-        z-index: 0;
+        width: 800px;
+        height: 800px;
+        filter: blur(60px);
+        opacity: 0.15;
+        border-radius: 50%;
+        animation: move 20s infinite alternate;
       }
-
-      /* Blob Aurora 1 */
-      .aurora-bg::before {
-        background: radial-gradient(circle, #2ea44f 0%, rgba(0, 0, 0, 0) 50%);
-        animation: aurora-anim 20s infinite linear;
+      .blob-1 {
+        background: #0969da;
+        top: -10%;
+        left: -10%;
       }
-
-      /* Blob Aurora 2 */
-      .aurora-bg::after {
-        background: radial-gradient(circle, #0969da 0%, rgba(0, 0, 0, 0) 60%);
-        animation: aurora-anim 30s infinite linear reverse;
+      .blob-2 {
+        background: #515aa7;
+        bottom: -10%;
+        right: -10%;
         animation-delay: -5s;
       }
 
-      @keyframes aurora-anim {
-        0% {
+      @keyframes move {
+        from {
           transform: translate(0, 0) rotate(0deg);
         }
-        100% {
-          transform: translate(20px, 50px) rotate(360deg);
+        to {
+          transform: translate(100px, 100px) rotate(360deg);
         }
       }
 
-      /* Gaya Glassmorphism */
+      /* Glass Cards */
       .glass-card {
-        background: rgba(
-          22,
-          27,
-          34,
-          0.7
-        ); /* Transparansi gelap standar GitHub */
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition:
+          transform 0.2s ease,
+          background-color 0.3s ease;
       }
 
-      /* Custom Scrollbar untuk Log seperti GitHub */
-      #logs::-webkit-scrollbar {
-        width: 6px;
+      /* Dark Mode Styles */
+      .dark .glass-card {
+        background: rgba(22, 27, 34, 0.8);
+        border-color: rgba(255, 255, 255, 0.05);
       }
-      #logs::-webkit-scrollbar-track {
-        background: transparent;
+      .dark .text-main {
+        color: #ffffff;
+      }
+      .dark .text-sub {
+        color: #8b949e;
+      }
+
+      /* Light Mode Styles */
+      .light .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        border-color: rgba(0, 0, 0, 0.05);
+      }
+      .light .text-main {
+        color: #1f2328;
+      }
+      .light .text-sub {
+        color: #636c76;
+      }
+      .light .aurora-blob {
+        opacity: 0.3;
+      }
+
+      /* Custom Scrollbar */
+      #logs::-webkit-scrollbar {
+        width: 4px;
       }
       #logs::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 3px;
-      }
-      #logs::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-
-      /* Animasi loading pulse */
-      .loader-pulse {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-      @keyframes pulse {
-        50% {
-          opacity: 0.5;
-        }
+        background: rgba(128, 128, 128, 0.3);
+        border-radius: 10px;
       }
     </style>
   </head>
-  <body class="aurora-bg text-[#c9d1d9] min-h-screen flex flex-col relative">
-    <div class="relative z-10 flex-grow p-4 md:p-8">
-      <div class="max-w-5xl mx-auto">
-        <header
-          class="flex items-center justify-between pb-8 mb-8 border-b border-[#30363d]"
-        >
-          <div class="flex items-center gap-3">
-            <svg
-              height="32"
-              aria-hidden="true"
-              viewBox="0 0 16 16"
-              version="1.1"
-              width="32"
-              class="fill-current text-white"
-            >
-              <path
-                d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
-              ></path>
-            </svg>
-            <h1 class="text-xl font-semibold text-white">
-              Hestia / <span class="text-[#8b949e]">RemoveBG-API</span>
-            </h1>
-          </div>
+  <body class="dark min-h-screen">
+    <div class="aurora-bg">
+      <div class="aurora-blob blob-1"></div>
+      <div class="aurora-blob blob-2"></div>
+    </div>
+
+    <div class="relative z-10 p-4 md:p-10 max-w-6xl mx-auto w-full">
+      <header
+        class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 opacity-0"
+        id="header-anim"
+      >
+        <div class="flex items-center gap-3">
           <div
-            class="flex items-center gap-2 text-sm bg-[#161b22] px-4 py-1.5 rounded-full border border-[#30363d]"
+            class="bg-sky-500 rounded-lg shadow-lg shadow-sky-500/20 w-10 h-10 flex items-center justify-center"
           >
-            <div
-              class="w-2.5 h-2.5 bg-[#2ea44f] rounded-full loader-pulse"
-            ></div>
-            <span class="text-[#8b949e]">Service Status:</span>
-            <span class="font-medium text-white">Operational</span>
+            <img
+              src="hestia.png"
+              alt="Logo"
+              class="w-full h-full object-cover rounded-md"
+            />
           </div>
-        </header>
+          <h1 class="text-2xl font-bold text-main tracking-tight">Hestia</h1>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="md:col-span-1 space-y-6">
-            <div class="glass-card p-6 rounded-xl">
-              <h2
-                class="text-lg font-semibold text-white mb-5 flex items-center gap-2"
+        <div class="flex items-center gap-4">
+          <button
+            onclick="toggleTheme()"
+            class="p-2 rounded-full glass-card hover:scale-110 active:scale-95 transition-all text-main"
+          >
+            <svg
+              id="theme-icon"
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            ></svg>
+          </button>
+          <div
+            class="flex items-center gap-2 px-4 py-2 glass-card rounded-full text-xs font-semibold text-main"
+          >
+            <span class="relative flex h-2 w-2">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
+              ></span>
+            </span>
+            API Active
+          </div>
+        </div>
+      </header>
+
+      <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div id="card-left" class="lg:col-span-4 space-y-6 opacity-0">
+          <div class="glass-card p-6 rounded-2xl shadow-xl">
+            <h2
+              class="text-lg font-bold text-main mb-6 flex items-center gap-2"
+            >
+              Upload Image
+            </h2>
+
+            <div class="space-y-4">
+              <div
+                class="p-4 border-2 border-dashed border-gray-500/20 rounded-xl hover:border-sky-500/50 transition-colors group"
               >
-                <svg
-                  class="w-5 h-5 text-[#8b949e]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  ></path>
-                </svg>
-                Source Image
-              </h2>
-
-              <div class="mb-5">
-                <label class="block mb-2 text-sm font-medium text-[#8b949e]"
-                  >Local File</label
-                >
                 <input
                   type="file"
                   id="file-input"
                   accept="image/*"
-                  class="w-full text-sm text-[#8b949e] file:mr-3 file:py-2 file:px-4 file:rounded-md file:border file:border-[#30363d] file:text-sm file:font-semibold file:bg-[#21262d] file:text-[#c9d1d9] hover:file:bg-[#30363d] cursor-pointer file:transition-colors"
+                  class="w-full text-sm text-sub file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-sky-500 file:text-white file:font-bold hover:file:bg-sky-600 cursor-pointer"
                 />
               </div>
 
-              <div class="relative flex py-4 items-center">
-                <div class="flex-grow border-t border-[#30363d]"></div>
-                <span class="flex-shrink mx-3 text-[#484f58] text-xs font-mono"
-                  >OR</span
-                >
-                <div class="flex-grow border-t border-[#30363d]"></div>
-              </div>
+              <div class="text-center text-xs font-bold text-sub py-2">OR</div>
 
-              <div class="mb-6">
-                <label class="block mb-2 text-sm font-medium text-[#8b949e]"
-                  >Image URL</label
-                >
-                <input
-                  type="text"
-                  id="img-url"
-                  placeholder="https://example.com/image.jpg"
-                  class="w-full p-2.5 rounded-md bg-[#0d1117] border border-[#30363d] focus:ring-1 focus:ring-[#58a6ff] focus:border-[#58a6ff] outline-none text-sm placeholder-[#484f58] transition-all"
-                />
-              </div>
+              <input
+                type="text"
+                id="img-url"
+                placeholder="Paste image URL here..."
+                class="w-full p-3 rounded-xl bg-gray-500/10 border border-gray-500/20 text-main placeholder-gray-500 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+              />
 
               <button
                 onclick="processAction()"
                 id="btn-submit"
-                class="w-full bg-[#238636] hover:bg-[#2ea44f] text-white py-2.5 px-5 rounded-md font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-sm"
+                class="w-full bg-sky-600 hover:bg-sky-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-sky-600/30 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
+                <span>Process Now</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card p-5 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-between mb-3">
+              <span
+                class="text-[10px] font-black uppercase tracking-widest text-sub"
+                >System Terminal</span
+              >
+              <button
+                onclick="
+                  document.getElementById('logs').innerHTML =
+                    '> Terminal cleared.'
+                "
+                class="text-[10px] text-sky-500 hover:underline"
+              >
+                Clear
+              </button>
+            </div>
+            <div
+              id="logs"
+              class="bg-black/20 p-4 rounded-xl text-[11px] font-mono h-40 overflow-y-auto border border-white/5 transition-colors duration-300 text-sub"
+            >
+              > Core ready...<br />
+              > Awaiting payload.
+            </div>
+          </div>
+        </div>
+
+        <div id="card-right" class="lg:col-span-8 opacity-0">
+          <div
+            class="glass-card p-6 rounded-2xl shadow-2xl h-full flex flex-col min-h-[400px]"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-lg font-bold text-main">Output Preview</h2>
+              <a
+                id="download-link"
+                href="#"
+                download="hestia-rembg.png"
+                class="hidden items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all animate-bounce"
+              >
+                Download Image
+              </a>
+            </div>
+
+            <div
+              class="flex-grow flex items-center justify-center bg-black/10 rounded-2xl border border-gray-500/10 relative overflow-hidden"
+            >
+              <div id="placeholder-ctx" class="text-center opacity-30">
                 <svg
-                  id="btn-icon"
-                  class="w-4 h-4"
+                  class="w-20 h-20 mx-auto mb-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -201,205 +258,156 @@
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                    stroke-width="1"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                   ></path>
                 </svg>
-                <span id="btn-text">Remove Background</span>
-              </button>
-            </div>
-
-            <div class="glass-card p-5 rounded-xl">
-              <h3
-                class="text-xs font-mono text-[#8b949e] uppercase tracking-wider mb-3"
-              >
-                Live Session Logs
-              </h3>
-              <div
-                id="logs"
-                class="bg-[#010409] p-4 rounded-md text-xs font-mono h-36 overflow-y-auto border border-[#30363d] text-[#7ee787]"
-              >
-                > Init hestia_core...<br />
-                > Ready for payload.
+                <p class="text-sm font-medium text-main">
+                  Ready for processing
+                </p>
               </div>
-            </div>
-          </div>
-
-          <div class="md:col-span-2">
-            <div class="glass-card p-6 rounded-xl h-full flex flex-col">
-              <div class="flex items-center justify-between mb-5">
-                <h2
-                  class="text-lg font-semibold text-white flex items-center gap-2"
-                >
-                  <svg
-                    class="w-5 h-5 text-[#58a6ff]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  Processed Result
-                </h2>
-                <a
-                  id="download-link"
-                  href="#"
-                  download="hestia-result.png"
-                  class="hidden text-xs bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-3 py-1.5 rounded-md border border-[#30363d] transition-colors font-medium items-center gap-1.5"
-                >
-                  <svg
-                    class="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    ></path>
-                  </svg>
-                  Download PNG
-                </a>
-              </div>
-
-              <div
-                class="flex-grow flex items-center justify-center bg-[#0d1117] rounded-lg border-2 border-dashed border-[#30363d] p-2 min-h-[300px]"
-              >
-                <div id="placeholder-ctx" class="text-center p-10 space-y-3">
-                  <svg
-                    class="w-16 h-16 text-[#30363d] mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    ></path>
-                  </svg>
-                  <p class="text-sm text-[#484f58]">
-                    Processed image will appear here
-                  </p>
-                </div>
-                <img
-                  id="output-img"
-                  class="hidden max-w-full max-h-[500px] rounded shadow-md object-contain"
-                />
-              </div>
+              <img
+                id="output-img"
+                class="hidden max-w-full max-h-[600px] rounded-lg shadow-2xl z-10"
+              />
             </div>
           </div>
         </div>
-      </div>
+      </main>
+
+      <footer class="mt-10 py-6 text-center text-xs font-medium text-sub">
+        &copy; 2026 hamma-nyk • Hestia Background Remover
+      </footer>
     </div>
 
-    <footer
-      class="relative z-10 p-6 text-center text-xs text-[#484f58] border-t border-[#30363d] mt-10"
-    >
-      Powered by Hestia Proxy API • Rembg Serverless
-    </footer>
-
     <script>
-      const toBase64 = (file) =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result.split(",")[1]);
-          reader.onerror = (error) => reject(error);
+      // --- 1. THEME MANAGEMENT ---
+      const themeIcon = document.getElementById("theme-icon");
+      const sunIcon = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />`;
+      const moonIcon = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />`;
+
+      function applyTheme(theme) {
+        if (theme === "light") {
+          document.body.classList.remove("dark");
+          document.body.classList.add("light");
+          themeIcon.innerHTML = moonIcon;
+        } else {
+          document.body.classList.remove("light");
+          document.body.classList.add("dark");
+          themeIcon.innerHTML = sunIcon;
+        }
+        localStorage.setItem("theme", theme);
+      }
+
+      function toggleTheme() {
+        const isDark = document.body.classList.contains("dark");
+        applyTheme(isDark ? "light" : "dark");
+      }
+
+      // Init theme from Storage
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      applyTheme(savedTheme);
+
+      // --- 2. ENTRANCE ANIMATIONS ---
+      window.addEventListener("DOMContentLoaded", () => {
+        const animate = (id, delay) => {
+          const el = document.getElementById(id);
+          el.style.transition = `all 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`;
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+        };
+
+        // Reset positions
+        ["header-anim", "card-left", "card-right"].forEach((id) => {
+          document.getElementById(id).style.transform = "translateY(30px)";
         });
 
-      const logBox = document.getElementById("logs");
-      const btn = document.getElementById("btn-submit");
-      const btnText = document.getElementById("btn-text");
-      const outImg = document.getElementById("output-img");
-      const placeholder = document.getElementById("placeholder-ctx");
-      const downloadBtn = document.getElementById("download-link");
+        // Trigger
+        animate("header-anim", 0.1);
+        animate("card-left", 0.3);
+        animate("card-right", 0.5);
+      });
 
-      function addLog(message, type = "info") {
-        const color =
-          type === "error"
-            ? "text-[#f85149]"
-            : type === "success"
-              ? "text-[#7ee787]"
-              : "text-[#79c0ff]";
-        logBox.innerHTML += `<br><span class="${color}">> ${message}</span>`;
+      // --- 3. CORE LOGIC ---
+      const logBox = document.getElementById("logs");
+      function addLog(msg, isErr = false) {
+        const time = new Date().toLocaleTimeString([], {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+
+        // Logika warna yang cerdas:
+        // Jika Error -> Merah
+        // Jika Normal -> Hijau di Dark Mode, Slate-800 di Light Mode
+        let colorClass = "";
+        if (isErr) {
+          colorClass = "text-red-500";
+        } else {
+          // dark:text-green-400 akan aktif saat body punya class .dark
+          // text-slate-800 akan aktif saat mode light
+          colorClass = "text-slate-800 dark:text-green-400";
+        }
+
+        logBox.innerHTML += `<br><span class="${colorClass}">[${time}] > ${msg}</span>`;
         logBox.scrollTop = logBox.scrollHeight;
       }
 
       async function processAction() {
         const fileInput = document.getElementById("file-input");
         const urlInput = document.getElementById("img-url");
-        let payload = {};
+        const btn = document.getElementById("btn-submit");
+        const outImg = document.getElementById("output-img");
+        const placeholder = document.getElementById("placeholder-ctx");
+        const dlBtn = document.getElementById("download-link");
 
-        if (fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          if (file.size > 3.5 * 1024 * 1024) {
-            alert("File terlalu besar (Maks 3.5MB untuk base64 Vercel)");
-            return;
-          }
-          addLog(`Reading file: ${file.name}...`);
-          const base64Data = await toBase64(file);
-          payload = { imageBase64: base64Data };
+        let payload = {};
+        if (fileInput.files[0]) {
+          const reader = new FileReader();
+          reader.readAsDataURL(fileInput.files[0]);
+          addLog("Encoding local file...");
+          const base64 = await new Promise((r) => {
+            reader.onload = () => r(reader.result.split(",")[1]);
+          });
+          payload = { imageBase64: base64 };
         } else if (urlInput.value) {
-          addLog(`Fetching from URL...`);
+          addLog("Targeting remote URL...");
           payload = { imageUrl: urlInput.value };
         } else {
-          alert("Please select a file or enter a URL first.");
-          return;
+          return alert("Pilih file atau URL!");
         }
 
-        // UI State loading
         btn.disabled = true;
-        btn.classList.remove("bg-[#238636]");
-        btn.classList.add("bg-[#30363d]", "cursor-not-allowed");
-        btnText.innerText = "Processing via API...";
-        outImg.classList.add("hidden");
-        placeholder.classList.remove("hidden");
-        downloadBtn.classList.add("hidden", "flex"); // hide download
-        downloadBtn.classList.remove("flex"); // hide download
+        btn.innerText = "Processing...";
+        addLog("Requesting removal via Proxy...");
 
         try {
-          // Menembak route cantik kita /remove-bg
-          const response = await fetch("/remove-bg", {
+          const res = await fetch("/remove-bg", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
 
-          if (response.ok) {
-            addLog("API response OK. Drawing image...", "success");
-            const blob = await response.blob();
-            const objectUrl = URL.createObjectURL(blob);
-
-            outImg.src = objectUrl;
+          if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            outImg.src = url;
             outImg.classList.remove("hidden");
             placeholder.classList.add("hidden");
-
-            downloadBtn.href = objectUrl;
-            downloadBtn.classList.remove("hidden");
-            downloadBtn.classList.add("flex");
+            dlBtn.href = url;
+            dlBtn.classList.remove("hidden");
+            dlBtn.classList.add("flex");
+            addLog("Background successfully purged!", false);
           } else {
-            const err = await response.json();
-            addLog(`API Error: ${err.message}`, "error");
-            if (err.message === "SEMUA_KEY_LIMIT")
-              alert("All API keys exhausted. Try again tomorrow.");
+            const data = await res.json();
+            addLog(data.message || "Failed", true);
           }
         } catch (e) {
-          addLog(`Critical Connection Error`, "error");
+          addLog("Connection dropped", true);
         } finally {
-          // Restore UI State
           btn.disabled = false;
-          btn.classList.add("bg-[#238636]");
-          btn.classList.remove("bg-[#30363d]", "cursor-not-allowed");
-          btnText.innerText = "Remove Background";
+          btn.innerText = "Process Now";
         }
       }
     </script>
