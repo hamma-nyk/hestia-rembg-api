@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/remove-bg",
+      "destination": "/api/remove-bg"
+    }
+  ]
+}
