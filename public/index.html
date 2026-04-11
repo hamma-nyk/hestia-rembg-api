@@ -100,6 +100,44 @@
         opacity: 0.3;
       }
 
+      .light .bg-pic {
+        background: #cfe5ff;
+      }
+
+            /* Warna Judul Hestia */
+      .text-hestia {
+          background-clip: text;
+          -webkit-background-clip: text;
+          color: transparent;
+          transition: all 0.5s ease;
+      }
+
+      /* Mode Light */
+      .light .text-hestia {
+          background-image: linear-gradient(to right, #0284c7, #2563eb, #4338ca); /* sky-600, blue-600, indigo-700 */
+      }
+
+      /* Mode Dark */
+      .dark .text-hestia {
+          background-image: linear-gradient(to right, #ffffff, #7dd3fc, #3b82f6); /* white, sky-300, blue-500 */
+      }
+
+      /* Warna Sub-teks (BACKGROUND REMOVER) */
+      .text-remover {
+          transition: color 0.5s ease;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.4em;
+          font-size: 9px;
+      }
+
+      .light .text-remover {
+          color: #334155; /* slate-700 */
+      }
+
+      .dark .text-remover {
+          color: rgba(14, 165, 233, 0.7); /* sky-500/70 */
+      }
       /* Custom Scrollbar */
       #logs::-webkit-scrollbar {
         width: 4px;
@@ -118,50 +156,52 @@
 
     <div class="relative z-10 p-4 md:p-10 max-w-6xl mx-auto w-full">
       <header
-        class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 opacity-0"
-        id="header-anim"
-      >
-        <div class="flex items-center gap-3">
-          <div
-            class="bg-sky-500 rounded-lg shadow-lg shadow-sky-500/20 w-10 h-10 flex items-center justify-center"
-          >
-            <img
-              src="hestia.png"
-              alt="Logo"
-              class="w-full h-full object-cover rounded-md"
-            />
-          </div>
-          <h1 class="text-2xl font-bold text-main tracking-tight">Hestia</h1>
-        </div>
+  class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 opacity-0 transition-colors duration-500"
+  id="header-anim"
+>
+  <div class="flex items-center gap-5 group cursor-default">
+  <div class="w-14 h-14 bg-pic border-2 border-sky-200 dark:border-sky-500/50 shadow-[0_0_20px_rgba(14,165,233,0.1)] dark:shadow-[0_0_20px_rgba(14,165,233,0.2)] rounded-2xl overflow-hidden p-1.5 transition-all duration-500 group-hover:scale-105 group-hover:border-sky-400">
+    <img
+      src="hestia.png"
+      alt="Logo"
+      class="w-full h-full object-cover rounded-xl shadow-inner transition-all"
+    />
+  </div>
 
-        <div class="flex items-center gap-4">
-          <button
-            onclick="toggleTheme()"
-            class="p-2 rounded-full glass-card hover:scale-110 active:scale-95 transition-all text-main"
-          >
-            <svg
-              id="theme-icon"
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            ></svg>
-          </button>
-          <div
-            class="flex items-center gap-2 px-4 py-2 glass-card rounded-full text-xs font-semibold text-main"
-          >
-            <span class="relative flex h-2 w-2">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
-              ></span>
-            </span>
-            API Active
-          </div>
-        </div>
-      </header>
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight text-hestia group-hover:brightness-110">
+      Hestia
+    </h1>
+    <p class="text-remover">
+      BACKGROUND REMOVER
+    </p>
+  </div>
+</div>
+
+  <div class="flex items-center gap-4">
+    <button
+      onclick="toggleTheme()"
+      class="p-2 rounded-full glass-card hover:scale-110 active:scale-95 transition-all text-main"
+    >
+      <svg
+        id="theme-icon"
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      ></svg>
+    </button>
+    <div
+      class="flex items-center gap-2 px-4 py-2 glass-card rounded-full text-xs font-semibold text-main"
+    >
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+      </span>
+      API Active
+    </div>
+  </div>
+</header>
 
       <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div id="card-left" class="lg:col-span-4 space-y-6 opacity-0">
@@ -230,53 +270,44 @@
         </div>
 
         <div id="card-right" class="lg:col-span-8 opacity-0">
-          <div
-            class="glass-card p-6 rounded-2xl shadow-2xl h-full flex flex-col min-h-[400px]"
-          >
-            <div class="flex justify-between items-center mb-6">
-              <h2 class="text-lg font-bold text-main">Output Preview</h2>
-              <a
-                id="download-link"
-                href="#"
-                download="hestia-rembg.png"
-                class="hidden items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all animate-bounce"
-              >
-                Download Image
+          <div class="glass-card p-6 rounded-2xl shadow-2xl h-full flex flex-col min-h-[400px]">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+              <h2 class="text-lg font-bold text-main">Comparison Preview</h2>
+              <a id="download-link" href="#" download="hestia-rembg.png" 
+                class="hidden items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all animate-bounce">
+                Download Result
               </a>
             </div>
 
-            <div
-              class="flex-grow flex items-center justify-center bg-black/10 rounded-2xl border border-gray-500/10 relative overflow-hidden"
-            >
-              <div id="placeholder-ctx" class="text-center opacity-30">
-                <svg
-                  class="w-20 h-20 mx-auto mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  ></path>
-                </svg>
-                <p class="text-sm font-medium text-main">
-                  Ready for processing
-                </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow">
+              
+              <div class="flex flex-col">
+                <span class="text-[10px] font-bold text-sub uppercase tracking-widest mb-2 ml-1">Original</span>
+                <div class="flex-grow flex items-center justify-center bg-black/5 rounded-2xl border border-gray-500/10 relative overflow-hidden min-h-[250px]">
+                  <div id="placeholder-before" class="text-center opacity-20">
+                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  </div>
+                  <img id="input-preview-img" class="hidden max-w-full max-h-[400px] rounded-lg object-contain p-2">
+                </div>
               </div>
-              <img
-                id="output-img"
-                class="hidden max-w-full max-h-[600px] rounded-lg shadow-2xl z-10"
-              />
+
+              <div class="flex flex-col">
+                <span class="text-[10px] font-bold text-sub uppercase tracking-widest mb-2 ml-1">Result (No BG)</span>
+                <div class="flex-grow flex items-center justify-center bg-black/20 rounded-2xl border border-gray-500/20 relative overflow-hidden min-h-[250px] shadow-inner">
+                  <div id="placeholder-after" class="text-center opacity-20">
+                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
+                  <img id="output-img" class="hidden max-w-full max-h-[400px] rounded-lg object-contain p-2 z-10">
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
       </main>
 
       <footer class="mt-10 py-6 text-center text-xs font-medium text-sub">
-        &copy; 2026 hamma-nyk • Hestia Background Remover
+        &copy; 2026 HAMMA-NYK
       </footer>
     </div>
 
@@ -359,27 +390,46 @@
         const urlInput = document.getElementById("img-url");
         const btn = document.getElementById("btn-submit");
         const outImg = document.getElementById("output-img");
-        const placeholder = document.getElementById("placeholder-ctx");
+        const inImg = document.getElementById("input-preview-img"); // New
+        const plBefore = document.getElementById("placeholder-before"); // New
+        const plAfter = document.getElementById("placeholder-after"); // New
         const dlBtn = document.getElementById("download-link");
 
         let payload = {};
+        let originalUrl = "";
+
+        // 1. Ambil Sumber Gambar & Tampilkan Pratinjau "Before"
         if (fileInput.files[0]) {
-          const reader = new FileReader();
-          reader.readAsDataURL(fileInput.files[0]);
-          addLog("Encoding local file...");
+          const file = fileInput.files[0];
+          originalUrl = URL.createObjectURL(file);
+          
+          addLog("Reading local file...");
           const base64 = await new Promise((r) => {
+            const reader = new FileReader();
             reader.onload = () => r(reader.result.split(",")[1]);
+            reader.readAsDataURL(file);
           });
           payload = { imageBase64: base64 };
         } else if (urlInput.value) {
+          originalUrl = urlInput.value;
           addLog("Targeting remote URL...");
           payload = { imageUrl: urlInput.value };
         } else {
           return alert("Pilih file atau URL!");
         }
 
+        // Tampilkan gambar asli di kolom kiri
+        inImg.src = originalUrl;
+        inImg.classList.remove("hidden");
+        plBefore.classList.add("hidden");
+
+        // Reset tampilan output (kanan)
         btn.disabled = true;
         btn.innerText = "Processing...";
+        outImg.classList.add("hidden");
+        plAfter.classList.remove("hidden");
+        dlBtn.classList.add("hidden");
+
         addLog("Requesting removal via Proxy...");
 
         try {
@@ -392,12 +442,15 @@
           if (res.ok) {
             const blob = await res.blob();
             const url = URL.createObjectURL(blob);
+            
             outImg.src = url;
             outImg.classList.remove("hidden");
-            placeholder.classList.add("hidden");
+            plAfter.classList.add("hidden");
+            
             dlBtn.href = url;
             dlBtn.classList.remove("hidden");
             dlBtn.classList.add("flex");
+            
             addLog("Background successfully purged!", false);
           } else {
             const data = await res.json();
